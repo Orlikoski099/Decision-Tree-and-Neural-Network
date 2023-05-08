@@ -27,10 +27,8 @@ def training(label=0):
     def classification():
         df = pd.DataFrame(vetor, columns=['qPA', 'bpm', 'fpm', 'gravidade'])
 
-        df['gravidade'] = pd.cut(df['gravidade'], bins=[-1, 25, 50, 75, 100],
+        df['gravidade'] = pd.cut(df['gravidade'], bins=[0, 25, 50, 75, 100],
                                  labels=['1', '2', '3', '4'], include_lowest=True)
-
-        X_train, X_test, y_train, y_test = train_test_split(df.drop('gravidade', axis=1), df['gravidade'], test_size=0.5, random_state=32)
 
         X = df[['qPA', 'bpm', 'fpm']]
         y = df['gravidade']
@@ -43,6 +41,9 @@ def training(label=0):
 
         y_pred = modelo.predict(X_test)
         report = classification_report(y_test, y_pred, zero_division=1)
+
+        print('\n\n--CLASSIFIER--\n')
+
         print(report)
 
         cm = confusion_matrix(y_test, y_pred)
@@ -79,6 +80,8 @@ def training(label=0):
         evs = explained_variance_score(y_test, y_pred)
         max_err = max_error(y_test, y_pred)
 
+        print('\n--REGRESSÃO--\n')
+
         print(f"MSE: {mse:.4f}")
         print(f"MAE: {mae:.4f}")
         print(f"R²: {r2:.4f}")
@@ -96,26 +99,20 @@ def training(label=0):
     return regression(), classification()
 
 
-reg, cla = training()
+def randomForest(samples):
 
-samples = []
+    reg, cla = training()
 
-for i in range(100):
-    qPA = round(random.uniform(-10, 10), 4)
-    bpm = round(random.uniform(0, 200), 4)
-    fpm = round(random.uniform(0, 22), 4)
-    samples.append([qPA, bpm, fpm])
+    samples = np.array(samples)
+    response = []
+    i = 0
 
-samples = np.array(samples)
-response = []
-i = 0
+    for sample in samples:
+        gravidade = reg(sample.reshape(1, -1))
+        classe = cla(sample.reshape(1, -1))
+        response.append([i, gravidade, classe])
+        i += 1
 
-for sample in samples:
-    gravidade = reg(sample.reshape(1, -1))
-    classe = cla(sample.reshape(1, -1))
-    response.append([i, gravidade, classe])
-    i += 1
-
-with open('random_forest-test_response.txt', 'w') as f:
-    for r in response:
-        f.write(f'{r[0]}, {r[1]}, {r[2]}\n')
+    with open('random_forest-test_response.txt', 'w') as f:
+        for r in response:
+            f.write(f'{r[0]}, {r[1]}, {r[2]}\n')

@@ -1,19 +1,20 @@
 import random
+from matplotlib import pyplot as plt
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import (ConfusionMatrixDisplay, accuracy_score,
-                             confusion_matrix, mean_squared_error, r2_score)
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.metrics import (ConfusionMatrixDisplay, classification_report, confusion_matrix, explained_variance_score,
+                             max_error, mean_absolute_error,
+                             mean_squared_error, r2_score)
 from sklearn.model_selection import train_test_split
-from sklearn.tree import (DecisionTreeClassifier, DecisionTreeRegressor,
-                          export_text, plot_tree)
 
 from readFile import readFile as reader
 
 TEST_SIZE = 0.2
 RANDOM_STATE = 37
+ESTIMATORS = 100
+DEPTH = 10
 
 def training(label=0):
     base = reader(label)
@@ -37,35 +38,20 @@ def training(label=0):
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE)
 
-        modelo = DecisionTreeClassifier(random_state=RANDOM_STATE)
+        modelo = RandomForestClassifier(n_estimators=ESTIMATORS, max_depth=DEPTH, random_state=RANDOM_STATE)
         modelo.fit(X_train, y_train)
 
         y_pred = modelo.predict(X_test)
-        accuracy = accuracy_score(y_test, y_pred)
-        print('Acurácia:', accuracy)
-
-        r = export_text(modelo, feature_names=['qPA', 'bpm', 'fpm'])
-        with open('decision_tree.txt', 'w') as f:
-            f.write(r)
-
-        plt.figure(figsize=(130, 60), facecolor='k')
-        plot_tree(modelo,
-                  feature_names=['qPA', 'bpm', 'fpm'],
-                  class_names=['Crítico', 'Instável', 'p. Estável', 'Estável'],
-                  rounded=True,
-                  filled=True,
-                  node_ids=True,
-                  impurity=False,
-                  fontsize=14)
-        plt.savefig('decision_tree.png')
+        report = classification_report(y_test, y_pred, zero_division=1)
+        print(report)
 
         cm = confusion_matrix(y_test, y_pred)
 
         cmd = ConfusionMatrixDisplay(
             cm, display_labels=['Crítico', 'Instável', 'p. Estável', 'Estável'])
         cmd.plot()
-        plt.savefig('decision_tree-matriz_confusão.png')
-
+        plt.savefig('random_forest-matriz_confusão.png')
+        
         def predict_gravidade(X):
             test = pd.DataFrame(X)
             test.columns = ['qPA', 'bpm', 'fpm']
@@ -82,13 +68,22 @@ def training(label=0):
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE)
 
-        modelo = DecisionTreeRegressor(random_state=RANDOM_STATE)
+        modelo = RandomForestRegressor(n_estimators=ESTIMATORS, max_depth=DEPTH, random_state=RANDOM_STATE)
         modelo.fit(X_train, y_train)
 
         y_pred = modelo.predict(X_test)
 
-        print('MSE: ', mean_squared_error(y_test, y_pred))
-        print('R²: ', r2_score(y_test, y_pred))
+        mse = mean_squared_error(y_test, y_pred)
+        mae = mean_absolute_error(y_test, y_pred)
+        r2 = r2_score(y_test, y_pred)
+        evs = explained_variance_score(y_test, y_pred)
+        max_err = max_error(y_test, y_pred)
+
+        print(f"MSE: {mse:.4f}")
+        print(f"MAE: {mae:.4f}")
+        print(f"R²: {r2:.4f}")
+        print(f"Explained Variance Score: {evs:.4f}")
+        print(f"Max Error: {max_err:.4f}")
 
         def predict_gravidade(X):
             test = pd.DataFrame(X)
@@ -121,6 +116,6 @@ for sample in samples:
     response.append([i, gravidade, classe])
     i += 1
 
-with open('decision_tree-test_response.txt', 'w') as f:
+with open('random_forest-test_response.txt', 'w') as f:
     for r in response:
         f.write(f'{r[0]}, {r[1]}, {r[2]}\n')

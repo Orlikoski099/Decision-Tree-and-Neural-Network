@@ -3,6 +3,8 @@ from randomForest import randomForest
 from decisionTree import decisionTree
 from neuralNetwork import neuralNetwork
 
+
+#Preencha para setar um arquivo de teste cego e utiliza-lo nos testes.
 FILENAME = ''
 
 samples = []

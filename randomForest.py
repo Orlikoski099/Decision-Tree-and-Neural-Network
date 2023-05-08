@@ -1,10 +1,11 @@
 import random
-from matplotlib import pyplot as plt
 
 import numpy as np
 import pandas as pd
+from matplotlib import pyplot as plt
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.metrics import (ConfusionMatrixDisplay, classification_report, confusion_matrix, explained_variance_score,
+from sklearn.metrics import (ConfusionMatrixDisplay, classification_report,
+                             confusion_matrix, explained_variance_score,
                              max_error, mean_absolute_error,
                              mean_squared_error, r2_score)
 from sklearn.model_selection import train_test_split

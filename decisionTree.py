@@ -4,8 +4,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import (ConfusionMatrixDisplay, accuracy_score, classification_report,
-                             confusion_matrix, explained_variance_score, max_error, mean_absolute_error, mean_squared_error, r2_score)
+from sklearn.metrics import (ConfusionMatrixDisplay, accuracy_score,
+                             classification_report, confusion_matrix,
+                             explained_variance_score, max_error,
+                             mean_absolute_error, mean_squared_error, r2_score)
 from sklearn.model_selection import train_test_split
 from sklearn.tree import (DecisionTreeClassifier, DecisionTreeRegressor,
                           export_text, plot_tree)

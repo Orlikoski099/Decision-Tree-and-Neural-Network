@@ -1,6 +1,6 @@
-COM_LABEL = 'Z:/Facul/SI/Trabalho 2 (Árvore de Decisão & Rede Neural)/Decision-Tree-and-Neural-Network/treino_sinais_vitais_com_label.txt'
-SEM_LABEL = 'Z:/Facul/SI/Trabalho 2 (Árvore de Decisão & Rede Neural)/Decision-Tree-and-Neural-Network/treino_sinais_vitais_sem_label.txt'
-
+COM_LABEL = 'D:/facul/SI/Decision-Tree-and-Neural-Network/treino_sinais_vitais_com_label.txt'
+SEM_LABEL = 'D:/facul/SI/Decision-Tree-and-Neural-Network/treino_sinais_vitais_sem_label.txt'
+# D:\facul\SI\Decision-Tree-and-Neural-Network\treino_sinais_vitais_sem_label.txt
 class Sinais:
     def __init__(self, id, pSist, pDiast, qPA, bpm, fpm, gravidade, label = None):
         self.id = id                                      #Identificação da vítima

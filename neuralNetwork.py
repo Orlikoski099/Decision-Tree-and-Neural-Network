@@ -10,7 +10,7 @@ from sklearn.neural_network import MLPClassifier, MLPRegressor
 
 from readFile import readFile as reader
 
-TEST_SIZE = 0.3
+TEST_SIZE = 0.2
 RANDOM_STATE = 5
 ITERATIONS = 5000
 LAYERS = (64, 32, 16, 8, 4)
